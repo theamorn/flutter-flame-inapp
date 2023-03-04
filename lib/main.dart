@@ -1,5 +1,6 @@
 import 'package:flame/game.dart';
 import 'package:flame/widgets.dart';
+import 'package:flame_app/action_button.dart';
 import 'package:flame_app/rain_particle.dart';
 import 'package:flutter/material.dart';
 import 'sprite_sheet.dart';
@@ -10,9 +11,11 @@ void main() {
 
 // TODO
 // create rain effect - done
-// create rain drop from random
-// add collosion of raindrop to UI
-// add splash of raindrop
+// create rain drop from random - done
+// add collosion of raindrop to UI - find the way to has collionsion detection on overlayui, if not need to create own sprite button to interact with it
+// seem like you need to create flame button and make collision instead using flutter widget ->
+// Check Circles, Boundcing Ball, Widget in Forge2DGame
+// add splash of raindrop - use sprite sheet to replace with that position, play once and remove
 // add feedback or animation to show that we can do callback
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -53,6 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final game = RainEffect();
     return Stack(children: [
       Scaffold(
           appBar: AppBar(
@@ -64,59 +68,20 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Expanded(
-                      child: GameWidget(
-                    game: RainEffect(),
+                      child: GameWidget<RainEffect>(
+                    game: game,
                     overlayBuilderMap: {
                       'container1': (ctx, game) {
-                        return Center(
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.blueAccent),
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.white,
-                                ),
-                                width: 300,
-                                height: 200,
-                              ),
-                              Align(
-                                  alignment: Alignment.center,
-                                  child: SizedBox(
-                                      width: 100,
-                                      child: TextButton(
-                                          style: ButtonStyle(
-                                              backgroundColor:
-                                                  MaterialStateProperty.all(
-                                                      Colors
-                                                          .blueAccent.shade200),
-                                              foregroundColor:
-                                                  MaterialStateProperty.all(
-                                                      Colors.white)),
-                                          onPressed: () {
-                                            print("==== pressed =====");
-                                          },
-                                          child: const Text('Sign in'))))
-                            ]));
+                        return ActionButtonWidget(game, 1, Colors.blueAccent,
+                            "Sign in", Alignment.center, () {
+                          print("=== press ===");
+                        });
                       },
                       'button1': (ctx, game) {
-                        return Align(
-                            alignment: Alignment.bottomCenter,
-                            child: SizedBox(
-                                width: 100,
-                                child: TextButton(
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStateProperty.all(
-                                                Colors.redAccent.shade200),
-                                        foregroundColor:
-                                            MaterialStateProperty.all(
-                                                Colors.white)),
-                                    onPressed: () {
-                                      print("==== pressed =====");
-                                    },
-                                    child: const Text('Sign out'))));
+                        return ActionButtonWidget(game, 2, Colors.redAccent,
+                            "Sign out", Alignment.bottomCenter, () {
+                          print("=== press ===");
+                        });
                       },
                     },
                     initialActiveOverlays: const ['button1', 'container1'],
