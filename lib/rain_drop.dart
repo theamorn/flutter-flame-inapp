@@ -44,25 +44,13 @@ class RainDrop extends PositionComponent
     position.y += velocity.y * dt;
   }
 
-  // @override
-  // void onCollisionStart(
-  //   Set<Vector2> intersectionPoints,
-  //   PositionComponent other,
-  // ) {
-  //   super.onCollisionStart(intersectionPoints, other);
-  //   hitbox.paint.color = _collisionColor;
-  //   if (other is ScreenHitbox) {
-  //     removeFromParent();
-  //     return;
-  //   }
-  // }
-
   @override
   void onCollisionStart(
     Set<Vector2> intersectionPoints,
     PositionComponent other,
   ) {
     super.onCollisionStart(intersectionPoints, other);
+    print("=== hit other $other");
 
     if (other is ScreenHitbox) {
       final collisionPoint = intersectionPoints.first;

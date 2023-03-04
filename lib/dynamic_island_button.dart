@@ -15,7 +15,8 @@ class DynamicIslandButton extends SpriteComponent {
 
   @override
   Future<void> onLoad() async {
-    final sprite = SpriteButton.asset(
+    await super.onLoad();
+    final button = SpriteButton.asset(
       path: 'buttons.png',
       pressedPath: 'buttons.png',
       srcPosition: Vector2(0, 0),

@@ -1,11 +1,14 @@
+import 'package:flame/collisions.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
+import 'package:flame_app/rain_drop.dart';
 import 'package:flutter/animation.dart';
 
-class SpriteSheetWidget extends FlameGame with TapDetector {
+class SpriteSheetWidget extends FlameGame
+    with TapDetector, HasCollisionDetection, CollisionCallbacks {
   @override
   void onTapDown(TapDownInfo info) {
     print(info.eventPosition.game);
@@ -42,5 +45,18 @@ class SpriteSheetWidget extends FlameGame with TapDetector {
           ),
         ),
     );
+  }
+
+  @override
+  void onCollisionStart(
+    Set<Vector2> intersectionPoints,
+    PositionComponent other,
+  ) {
+    super.onCollisionStart(intersectionPoints, other);
+    print("=== hit other $other");
+
+    if (other is RainDrop) {
+      print("===== rain hit me =====");
+    }
   }
 }
