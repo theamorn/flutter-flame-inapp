@@ -1,22 +1,14 @@
-import 'package:flame/collisions.dart';
 import 'package:flame/game.dart';
-import 'package:flame/input.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
-import 'package:flame_app/rain_drop.dart';
 import 'package:flutter/animation.dart';
 
-class SpriteSheetWidget extends FlameGame with TapDetector {
-  @override
-  void onTapDown(TapDownInfo info) {
-    print(info.eventPosition.game);
-  }
-
+class RainSplash extends FlameGame {
   @override
   Future<void> onLoad() async {
     final spriteSheet = SpriteSheet(
-      image: await images.load('cat_sprite_long.png'),
+      image: await images.load('splash_ground.png'),
       srcSize: Vector2(50.0, 50.0),
     );
     final spriteSize = Vector2(50.0, 50.0);

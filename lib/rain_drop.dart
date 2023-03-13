@@ -4,6 +4,9 @@ import 'dart:ui';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
+import 'package:flame_app/drop_splash.dart';
+import 'package:flame_app/fake_area.dart';
+import 'package:flame_app/sprite_sheet.dart';
 import 'package:flutter/material.dart';
 
 class RainDrop extends PositionComponent
@@ -50,8 +53,6 @@ class RainDrop extends PositionComponent
     PositionComponent other,
   ) {
     super.onCollisionStart(intersectionPoints, other);
-    print("=== hit other $other");
-
     if (other is ScreenHitbox) {
       final collisionPoint = intersectionPoints.first;
       if (collisionPoint.x == 0) {
@@ -71,7 +72,15 @@ class RainDrop extends PositionComponent
 
       if (collisionPoint.y.floor() == gameRef.size.y.floor()) {
         removeFromParent();
+
+        add(DropSplash(Vector2(100, 100)));
       }
+    } else if (other is FakeArea) {
+      removeFromParent();
+      final collisionPoint = intersectionPoints.first;
+      print("what hit point ${collisionPoint}");
+      // add(SpriteSheetWidget());
+      add(DropSplash(collisionPoint));
     }
   }
 }

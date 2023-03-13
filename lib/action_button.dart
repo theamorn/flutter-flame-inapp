@@ -27,18 +27,6 @@ class ActionButtonWidget extends StatefulWidget {
 }
 
 class _ActionButtonState extends State<ActionButtonWidget> {
-  // final SpriteSheetWidget _game;
-  // final int _bodyId;
-  // Body? _body;
-
-  // _ActionButtonState(this._game, this._bodyId) {
-  //   _game.updateStates.add(() {
-  //     setState(() {
-  //       _body = _game.bodyIdMap[_bodyId];
-  //     });
-  //   });
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -46,52 +34,18 @@ class _ActionButtonState extends State<ActionButtonWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // final body = widget._bodyId;
-    // widget._game.children.first.
-
-    // final bodyPosition = _game.screenPosition(body);
-    return Center(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: widget.color),
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.white,
-        ),
-        width: 300,
-        height: 200,
-      ),
-      Align(
-          alignment: widget.align,
-          child: SizedBox(
-              width: 100,
-              child: TextButton(
-                  style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all(widget.color.shade200),
-                      foregroundColor: MaterialStateProperty.all(Colors.white)),
-                  onPressed: () {
-                    widget.onPressed();
-                  },
-                  child: Text(widget.title))))
-    ]));
-    // return Positioned(
-    //   top: bodyPosition.y - 18,
-    //   left: bodyPosition.x - 90,
-    //   child: Transform.rotate(
-    //     angle: body.angle,
-    //     child: ElevatedButton(
-    //       onPressed: () {
-    //         setState(
-    //           () => body.applyLinearImpulse(Vector2(0.0, 1000)),
-    //         );
-    //       },
-    //       child: const Text(
-    //         'Flying button!',
-    //         textScaleFactor: 2.0,
-    //       ),
-    //     ),
-    //   ),
-    // );
+    return Align(
+        alignment: widget.align,
+        child: SizedBox(
+            width: 100,
+            child: TextButton(
+                style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all(widget.color.shade200),
+                    foregroundColor: MaterialStateProperty.all(Colors.white)),
+                onPressed: () {
+                  widget.onPressed();
+                },
+                child: Text(widget.title))));
   }
 }

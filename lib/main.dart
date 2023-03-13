@@ -10,10 +10,6 @@ void main() {
 }
 
 // TODO
-// create rain effect - done
-// create rain drop from random - done
-// add collosion of raindrop to UI - find the way to has collionsion detection on overlayui, if not need to create own sprite button to interact with it
-// seem like you need to create flame button and make collision instead using flutter widget ->
 // Check Circles, Boundcing Ball, Widget in Forge2DGame
 // add splash of raindrop - use sprite sheet to replace with that position, play once and remove
 // add feedback or animation to show that we can do callback
@@ -23,7 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      showPerformanceOverlay: true,
+      showPerformanceOverlay: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -44,6 +40,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   double maxWidth = 0.0;
   double maxHeight = 0.0;
+  late RainEffect game;
+
+  @override
+  void initState() {
+    super.initState();
+    game = RainEffect();
+  }
 
   @override
   void didChangeDependencies() {
@@ -56,7 +59,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final game = RainEffect();
     return Stack(children: [
       Scaffold(
           appBar: AppBar(
@@ -68,24 +70,50 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Expanded(
-                      child: GameWidget<RainEffect>(
-                    game: game,
-                    overlayBuilderMap: {
-                      'container1': (ctx, game) {
-                        return ActionButtonWidget(game, 1, Colors.blueAccent,
-                            "Sign in", Alignment.center, () {
-                          print("=== press ===");
-                        });
-                      },
-                      'button1': (ctx, game) {
-                        return ActionButtonWidget(game, 2, Colors.redAccent,
-                            "Sign out", Alignment.bottomCenter, () {
-                          print("=== press ===");
-                        });
-                      },
+                      child: GameWidget<
+                          RainEffect>(game: game, overlayBuilderMap: {
+                    'userArea': (ctx, game) {
+                      return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 80),
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                TextField(
+                                    decoration:
+                                        InputDecoration(hintText: 'Username')),
+                                TextField(
+                                    decoration:
+                                        InputDecoration(hintText: 'Password'))
+                              ]));
                     },
-                    initialActiveOverlays: const ['button1', 'container1'],
-                  )),
+                    'container1': (ctx, game) {
+                      return ActionButtonWidget(game, 1, Colors.blueAccent,
+                          "Sign in", Alignment.bottomCenter, () {
+                        print("=== Widget inside Flutter Flame ===");
+                      });
+                    },
+                  }, initialActiveOverlays: const [
+                    'userArea',
+                    'container1'
+                  ])),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.blueAccent.shade400),
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                        ),
+                        width: 300,
+                        height: 200,
+                      ),
+                      ActionButtonWidget(game, 2, Colors.redAccent, "Sign out",
+                          Alignment.bottomCenter, () {
+                        print("=== Normal Widget in Flutter ===");
+                      })
+                    ],
+                  ),
                 ],
               ),
             ),

@@ -1,17 +1,21 @@
 import 'dart:math';
 
+import 'package:flame/collisions.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
+import 'package:flame_app/drop_splash.dart';
+import 'package:flame_app/fake_area.dart';
 import 'package:flame_app/rain_drop.dart';
 import 'package:flutter/animation.dart';
+import 'package:flutter/material.dart';
 
 import 'dynamic_island_button.dart';
 
 class RainEffect extends FlameGame
-    with HasGameRef<FlameGame>, HasCollisionDetection, TapDetector {
+    with HasGameRef<FlameGame>, HasCollisionDetection, HasTappables {
   late SpriteSheet rainSprite;
   var isRaining = true;
   @override
@@ -37,18 +41,31 @@ class RainEffect extends FlameGame
     );
 
     add(ScreenHitbox());
-    // add(DynamicIslandButton());
-    // add(rainComponent);
+
+    add(DynamicIslandButton()
+      ..position = Vector2(size.x / 2, size.y / 2 + 80)
+      ..size = Vector2(size.x - 160, 40)
+      ..anchor = Anchor.center);
+
+    add(FakeArea(gameRef.size / 2, Vector2(gameRef.size.x - 160, 100)));
   }
 
   @override
-  Future<void> onTapDown(TapDownInfo info) async {
-    while (true) {
-      final randomX = Random();
-      final xPos = randomX.nextDouble() * gameRef.size.x;
-      final position = Vector2(xPos, 0);
-      add(RainDrop(position));
-      await Future.delayed(const Duration(milliseconds: 30));
-    }
+  Future<void> onTapDown(int pointerId, TapDownInfo info) async {
+    super.onTapDown(pointerId, info);
+
+    // while (isRaining) {
+    final randomX = Random();
+    final xPos = randomX.nextDouble() * gameRef.size.x;
+    final position = Vector2(xPos, 0);
+    add(RainDrop(position));
+    await Future.delayed(const Duration(milliseconds: 30));
+    // }
+
+    // isRaining = !isRaining;
   }
+
+  // @override
+  // Future<void> onTapDown(TapDownInfo info) async {
+  //   super.onTapDown(info);
 }
