@@ -6,7 +6,6 @@ import 'package:flame/input.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
-import 'package:flame_app/drop_splash.dart';
 import 'package:flame_app/fake_area.dart';
 import 'package:flame_app/rain_drop.dart';
 import 'package:flutter/animation.dart';
@@ -23,10 +22,6 @@ class RainEffect extends FlameGame
 
   @override
   Future<void> onLoad() async {
-    // on load run once
-    // load rain splash effect randomly with sprite sheet
-    // on object collosion hide the rain drop and run sprite sheet instead
-
     rainSprite = SpriteSheet(
       image: await images.load('rain_effect.png'),
       srcSize: Vector2(1024.0, 60.0),
@@ -39,9 +34,9 @@ class RainEffect extends FlameGame
       scale: Vector2(3.5, 3.5),
       size: spriteSize,
     );
+    add(rainComponent);
 
     add(ScreenHitbox());
-
     add(DynamicIslandButton()
       ..position = Vector2(size.x / 2, size.y / 2 + 80)
       ..size = Vector2(size.x - 160, 40)
@@ -54,18 +49,12 @@ class RainEffect extends FlameGame
   Future<void> onTapDown(int pointerId, TapDownInfo info) async {
     super.onTapDown(pointerId, info);
 
-    // while (isRaining) {
-    final randomX = Random();
-    final xPos = randomX.nextDouble() * gameRef.size.x;
-    final position = Vector2(xPos, 0);
-    add(RainDrop(position));
-    await Future.delayed(const Duration(milliseconds: 30));
-    // }
-
-    // isRaining = !isRaining;
+    while (isRaining) {
+      final randomX = Random();
+      final xPos = randomX.nextDouble() * gameRef.size.x;
+      final position = Vector2(xPos, 0);
+      add(RainDrop(position));
+      await Future.delayed(const Duration(milliseconds: 200));
+    }
   }
-
-  // @override
-  // Future<void> onTapDown(TapDownInfo info) async {
-  //   super.onTapDown(info);
 }

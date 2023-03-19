@@ -21,6 +21,7 @@ class FakeArea extends PositionComponent with HasGameRef<RainEffect> {
 
     hitbox = RectangleHitbox()
       ..paint = defaultPaint
+      ..isSolid = true
       ..renderShape = true;
 
     add(hitbox);

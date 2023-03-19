@@ -1,12 +1,7 @@
-import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flame/palette.dart';
-import 'package:flame/sprite.dart';
 import 'package:flame/components.dart';
-import 'package:flame/effects.dart';
-import 'package:flame/widgets.dart';
 import 'package:flame_app/rain_particle.dart';
-import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 
 enum ButtonState { unpressed, pressed }
@@ -50,6 +45,7 @@ class DynamicIslandButton extends SpriteGroupComponent<ButtonState>
   @override
   bool onTapDown(TapDownInfo info) {
     current = ButtonState.pressed;
+    print("=== This is Flutter Flame Button ===");
     return true;
   }
 }

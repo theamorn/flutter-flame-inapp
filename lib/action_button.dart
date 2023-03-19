@@ -1,20 +1,12 @@
-import 'package:flame_app/rain_particle.dart';
 import 'package:flutter/material.dart';
-import 'package:flame/game.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class ActionButtonWidget extends StatefulWidget {
-  final RainEffect _game;
-  final int _bodyId;
   final VoidCallback onPressed;
   final String title;
   final MaterialAccentColor color;
   final Alignment align;
 
   const ActionButtonWidget(
-    this._game,
-    this._bodyId,
     this.color,
     this.title,
     this.align,

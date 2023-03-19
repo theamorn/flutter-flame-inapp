@@ -1,11 +1,6 @@
-import 'package:flame/collisions.dart';
 import 'package:flame/game.dart';
-import 'package:flame/input.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame/components.dart';
-import 'package:flame/effects.dart';
-import 'package:flame_app/rain_drop.dart';
-import 'package:flutter/animation.dart';
 
 class DropSplash extends FlameGame {
   final Vector2 position;
@@ -16,18 +11,22 @@ class DropSplash extends FlameGame {
   Future<void> onLoad() async {
     final spriteSheet = SpriteSheet(
       image: await images.load('drop_splash.png'),
-      srcSize: Vector2(85.0, 90.0),
+      srcSize: Vector2(90.0, 90.0),
     );
-    final spriteSize = Vector2(85.0, 90.0);
+    final spriteSize = Vector2(90.0, 90.0);
 
     final animation =
         spriteSheet.createAnimation(row: 0, stepTime: 0.1, to: 12);
     final component1 = SpriteAnimationComponent(
+        scale: Vector2(0.5, 0.5),
         animation: animation,
-        position: position,
+        position: position - Vector2(20, 40),
         size: spriteSize,
-        removeOnFinish: false);
+        removeOnFinish: true);
 
     add(component1);
+
+    Future.delayed(const Duration(milliseconds: 1000))
+        .then((value) => removeFromParent());
   }
 }

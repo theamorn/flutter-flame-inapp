@@ -1,5 +1,4 @@
 import 'package:flame/game.dart';
-import 'package:flame/widgets.dart';
 import 'package:flame_app/action_button.dart';
 import 'package:flame_app/rain_particle.dart';
 import 'package:flutter/material.dart';
@@ -9,10 +8,6 @@ void main() {
   runApp(const MyApp());
 }
 
-// TODO
-// Check Circles, Boundcing Ball, Widget in Forge2DGame
-// add splash of raindrop - use sprite sheet to replace with that position, play once and remove
-// add feedback or animation to show that we can do callback
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -70,47 +65,54 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Expanded(
-                      child: GameWidget<
-                          RainEffect>(game: game, overlayBuilderMap: {
-                    'userArea': (ctx, game) {
-                      return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 80),
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                TextField(
-                                    decoration:
-                                        InputDecoration(hintText: 'Username')),
-                                TextField(
-                                    decoration:
-                                        InputDecoration(hintText: 'Password'))
-                              ]));
-                    },
-                    'container1': (ctx, game) {
-                      return ActionButtonWidget(game, 1, Colors.blueAccent,
-                          "Sign in", Alignment.bottomCenter, () {
-                        print("=== Widget inside Flutter Flame ===");
-                      });
-                    },
-                  }, initialActiveOverlays: const [
-                    'userArea',
-                    'container1'
-                  ])),
+                      child: GameWidget<RainEffect>(
+                          game: game,
+                          overlayBuilderMap: {
+                        'userArea': (ctx, game) {
+                          return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 80),
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    TextField(
+                                        decoration: InputDecoration(
+                                            filled: true,
+                                            fillColor: Colors.white,
+                                            hintText: 'Username')),
+                                    TextField(
+                                        decoration: InputDecoration(
+                                            filled: true,
+                                            fillColor: Colors.white,
+                                            hintText: 'Password'))
+                                  ]));
+                        },
+                        'container1': (ctx, game) {
+                          return ActionButtonWidget(Colors.blueAccent,
+                              "Sign in", Alignment.bottomCenter, () {
+                            print(
+                                "=== This is Flutter widget inside Flutter Flame ===");
+                          });
+                        },
+                      },
+                          initialActiveOverlays: const [
+                        'userArea',
+                        'container1'
+                      ])),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.blueAccent.shade400),
-                          borderRadius: BorderRadius.circular(10),
                           color: Colors.white,
                         ),
-                        width: 300,
                         height: 200,
                       ),
-                      ActionButtonWidget(game, 2, Colors.redAccent, "Sign out",
-                          Alignment.bottomCenter, () {
-                        print("=== Normal Widget in Flutter ===");
+                      ActionButtonWidget(
+                          Colors.redAccent, "Sign out", Alignment.bottomCenter,
+                          () {
+                        print("=== This is normal Flutter widget ===");
                       })
                     ],
                   ),

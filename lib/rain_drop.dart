@@ -4,13 +4,17 @@ import 'dart:ui';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
+import 'package:flame/sprite.dart';
 import 'package:flame_app/drop_splash.dart';
+import 'package:flame_app/dynamic_island_button.dart';
 import 'package:flame_app/fake_area.dart';
+import 'package:flame_app/rain_particle.dart';
+import 'package:flame_app/rain_splash.dart';
 import 'package:flame_app/sprite_sheet.dart';
 import 'package:flutter/material.dart';
 
 class RainDrop extends PositionComponent
-    with HasGameRef<FlameGame>, CollisionCallbacks {
+    with HasGameRef<RainEffect>, CollisionCallbacks {
   late Vector2 velocity;
   late ShapeHitbox hitbox;
   final _defaultColor = Colors.blueAccent.shade100;
@@ -56,31 +60,31 @@ class RainDrop extends PositionComponent
     if (other is ScreenHitbox) {
       final collisionPoint = intersectionPoints.first;
       if (collisionPoint.x == 0) {
-        // splash image random with sprite sheet
-        // removeFromParent();
         velocity.x = -velocity.x;
         velocity.y = velocity.y;
       }
 
       if (collisionPoint.x.floor() == gameRef.size.x.floor()) {
         removeFromParent();
+        return;
       }
 
       if (collisionPoint.y == 0) {
         removeFromParent();
+        return;
       }
 
       if (collisionPoint.y.floor() == gameRef.size.y.floor()) {
         removeFromParent();
+        gameRef.add(DropSplash(collisionPoint));
 
-        add(DropSplash(Vector2(100, 100)));
+        return;
       }
     } else if (other is FakeArea) {
       removeFromParent();
       final collisionPoint = intersectionPoints.first;
-      print("what hit point ${collisionPoint}");
-      // add(SpriteSheetWidget());
-      add(DropSplash(collisionPoint));
+      gameRef.add(RainSplash(collisionPoint));
+      return;
     }
   }
 }
