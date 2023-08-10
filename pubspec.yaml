@@ -70,6 +70,8 @@ flutter:
     - shaders/rain.frag
     - shaders/snow.frag
     - shaders/star.frag
+    - shaders/sun.frag
+    - shaders/water.glsl
 
   # To add assets to your application, add an assets section, like this:
   assets:

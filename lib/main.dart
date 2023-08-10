@@ -5,9 +5,13 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flame/game.dart';
 import 'package:flame_app/action_button.dart';
 import 'package:flame_app/rain_particle.dart';
+import 'package:flame_app/water.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'sprite_sheet.dart';
 import 'package:flutter_shaders/flutter_shaders.dart';
+import 'dart:math' as math;
+import 'package:vector_math/vector_math_64.dart' as vec;
 
 void main() {
   runApp(const MyApp());
@@ -47,31 +51,29 @@ class ShaderPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint();
-    shader.setFloat(0, size.width);
-    shader.setFloat(1, size.height);
-    shader.setFloat(2, time);
-    // shader.setFloat(3, seaHeight.clamp(0, 1));
-
-    paint.shader = shader;
-
+    // canvas.translate(size.width, size.height);
+    // canvas.rotate(180 * vec.degrees2Radians);
+    // canvas.drawRect(
+    //   Rect.fromLTWH(0, 0, size.width, size.height),
+    //   Paint()..shader = shader,
+    // );
     // canvas
     //   ..translate(size.width, size.height)
     //   ..rotate(180 * degrees2Radians)
     //   ..drawRect(
-    //     Rect.fromLTWH(0, 0, size.width, size.height),
+    //     Offset.zero & size,
     //     Paint()..shader = shader,
     //   );
 
     canvas.drawRect(
-      Rect.fromLTWH(0, 0, size.width, size.height),
-      paint,
+      Offset.zero & size,
+      Paint()..shader = shader,
     );
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
+    return oldDelegate != this;
   }
 }
 
@@ -82,11 +84,14 @@ class _MyHomePageState extends State<MyHomePage>
   late RainEffect game;
   late Timer timer;
   double delta = 0;
+  late Water waterGame;
+  ui.Image? image;
 
   @override
   void initState() {
     super.initState();
     game = RainEffect();
+    waterGame = Water();
     timer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
       setState(() {
         delta += 1 / 60;
@@ -96,6 +101,9 @@ class _MyHomePageState extends State<MyHomePage>
 
   @override
   Future<FutureOr<void>> afterFirstLayout(BuildContext context) async {
+    final imageData = await rootBundle.load('assets/images/street.jpg');
+    image = await decodeImageFromList(imageData.buffer.asUint8List());
+
     // final program = await ui.FragmentProgram.fromAsset('shaders/myshader.frag');
   }
 
@@ -116,6 +124,29 @@ class _MyHomePageState extends State<MyHomePage>
 
   @override
   Widget build(BuildContext context) {
+    // return Scaffold(
+    //   appBar: AppBar(
+    //     title: const Text('Water'),
+    //   ),
+    //   body: GameWidget(game: waterGame),
+    //   floatingActionButton: Column(
+    //     mainAxisAlignment: MainAxisAlignment.end,
+    //     crossAxisAlignment: CrossAxisAlignment.end,
+    //     children: [
+    //       FloatingActionButton(
+    //         heroTag: Object(),
+    //         onPressed: () => waterGame.seaHeight += 0.1,
+    //         child: const Icon(Icons.add),
+    //       ),
+    //       const SizedBox(height: 8),
+    //       FloatingActionButton(
+    //         heroTag: Object(),
+    //         onPressed: () => waterGame.seaHeight -= 0.1,
+    //         child: const Icon(Icons.remove),
+    //       ),
+    //     ],
+    //   ),
+    // );
     return Stack(children: [
       Scaffold(
           appBar: AppBar(
@@ -127,18 +158,42 @@ class _MyHomePageState extends State<MyHomePage>
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   // SizedBox(
-                  //   height: 1000,
-                  //   child: ShaderBuilder(
-                  //       (context, shader, child) => CustomPaint(
-                  //             size: MediaQuery.of(context).size,
-                  //             painter:
-                  //                 ShaderPainter(shader: shader, time: delta),
-                  //           ),
-                  //       assetKey: 'shaders/myshader.frag',
+                  //   height: 300,
+                  //   child: ShaderBuilder((context, shader, child) {
+                  //     final size = MediaQuery.sizeOf(context);
+                  //     shader.setFloat(0, size.width);
+                  //     shader.setFloat(1, size.height);
+                  //     shader.setFloat(2, delta);
+                  //     // shader.setFloat(3, 0.5);
+                  //     return CustomPaint(
+                  //       size: MediaQuery.of(context).size,
+                  //       painter: ShaderPainter(shader: shader, time: delta),
+                  //     );
+                  //   },
+                  //       assetKey: 'shaders/wave.frag',
                   //       child: const Center(
                   //         child: CircularProgressIndicator(),
                   //       )),
                   // ),
+                  SizedBox(
+                    height: 700,
+                    child: ShaderBuilder((context, shader, child) {
+                      final size = MediaQuery.sizeOf(context);
+                      shader.setFloat(0, size.width);
+                      shader.setFloat(1, size.height);
+                      shader.setFloat(2, delta);
+                      // shader.setImageSampler(0, image!);
+                      // shader.setFloat(3, 0.5);
+                      return CustomPaint(
+                        size: MediaQuery.of(context).size,
+                        painter: ShaderPainter(shader: shader, time: delta),
+                      );
+                    },
+                        assetKey: 'shaders/ball.frag',
+                        child: const Center(
+                          child: CircularProgressIndicator(),
+                        )),
+                  ),
                   // SizedBox(
                   //   height: 200,
                   //   child: ShaderBuilder(
@@ -152,97 +207,115 @@ class _MyHomePageState extends State<MyHomePage>
                   //         child: CircularProgressIndicator(),
                   //       )),
                   // ),
-                  SizedBox(
-                    height: 200,
-                    child: ShaderBuilder(
-                        (context, shader, child) => CustomPaint(
-                              size: MediaQuery.of(context).size,
-                              painter:
-                                  ShaderPainter(shader: shader, time: delta),
-                            ),
-                        assetKey: 'shaders/snow.frag',
-                        child: const Center(
-                          child: CircularProgressIndicator(),
-                        )),
-                  ),
-                  SizedBox(
-                    height: 200,
-                    child: ShaderBuilder(
-                        (context, shader, child) => CustomPaint(
-                              size: MediaQuery.of(context).size,
-                              painter:
-                                  ShaderPainter(shader: shader, time: delta),
-                            ),
-                        assetKey: 'shaders/star.frag',
-                        child: const Center(
-                          child: CircularProgressIndicator(),
-                        )),
-                  ),
-                  SizedBox(
-                    height: 200,
-                    child: ShaderBuilder(
-                        (context, shader, child) => CustomPaint(
-                              size: MediaQuery.of(context).size,
-                              painter:
-                                  ShaderPainter(shader: shader, time: delta),
-                            ),
-                        assetKey: 'shaders/wave.frag',
-                        child: const Center(
-                          child: CircularProgressIndicator(),
-                        )),
-                  ),
+                  // SizedBox(height: 1000, child: GameWidget(game: waterGame)),
+                  // ShaderBuilder((context, shader, child) {
+                  //   final size = MediaQuery.sizeOf(context);
+                  //   shader.setFloat(0, size.width);
+                  //   shader.setFloat(1, size.height);
+                  //   shader.setFloat(2, delta);
+                  //   shader.setFloat(3, 0.5);
+                  //   return CustomPaint(
+                  //     size: const Size(double.infinity, 600),
+                  //     painter: ShaderPainter(shader: shader, time: delta),
+                  //   );
+                  // },
+                  //     assetKey: 'shaders/water.glsl',
+                  //     child: const Center(
+                  //       child: CircularProgressIndicator(),
+                  //     )),
 
-                  Expanded(
-                      child: GameWidget<RainEffect>(
-                          game: game,
-                          overlayBuilderMap: {
-                        'userArea': (ctx, game) {
-                          return const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 80),
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    TextField(
-                                        decoration: InputDecoration(
-                                            filled: true,
-                                            fillColor: Colors.white,
-                                            hintText: 'Username')),
-                                    TextField(
-                                        decoration: InputDecoration(
-                                            filled: true,
-                                            fillColor: Colors.white,
-                                            hintText: 'Password'))
-                                  ]));
-                        },
-                        'container1': (ctx, game) {
-                          return ActionButtonWidget(Colors.blueAccent,
-                              "Sign in", Alignment.bottomCenter, () {
-                            print(
-                                "=== This is Flutter widget inside Flutter Flame ===");
-                          });
-                        },
-                      },
-                          initialActiveOverlays: const [
-                        'userArea',
-                        'container1'
-                      ])),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blueAccent.shade400),
-                          color: Colors.white,
-                        ),
-                        height: 200,
-                      ),
-                      ActionButtonWidget(
-                          Colors.redAccent, "Sign out", Alignment.bottomCenter,
-                          () {
-                        print("=== This is normal Flutter widget ===");
-                      })
-                    ],
-                  ),
+                  // SizedBox(
+                  //   height: 1000,
+                  //   child: ShaderBuilder(
+                  //       (context, shader, child) => CustomPaint(
+                  //             size: MediaQuery.of(context).size,
+                  //             painter:
+                  //                 ShaderPainter(shader: shader, time: delta),
+                  //           ),
+                  //       assetKey: 'shaders/sun.frag',
+                  //       child: const Center(
+                  //         child: CircularProgressIndicator(),
+                  //       )),
+                  // ),
+
+                  // SizedBox(
+                  //   height: 200,
+                  //   child: ShaderBuilder(
+                  //       (context, shader, child) => CustomPaint(
+                  //             size: MediaQuery.of(context).size,
+                  //             painter:
+                  //                 ShaderPainter(shader: shader, time: delta),
+                  //           ),
+                  //       assetKey: 'shaders/star.frag',
+                  //       child: const Center(
+                  //         child: CircularProgressIndicator(),
+                  //       )),
+                  // ),
+                  // SizedBox(
+                  //   height: 200,
+                  //   child: ShaderBuilder(
+                  //       (context, shader, child) => CustomPaint(
+                  //             size: MediaQuery.of(context).size,
+                  //             painter:
+                  //                 ShaderPainter(shader: shader, time: delta),
+                  //           ),
+                  //       assetKey: 'shaders/wave.frag',
+                  //       child: const Center(
+                  //         child: CircularProgressIndicator(),
+                  //       )),
+                  // ),
+
+                  // Expanded(
+                  //     child: GameWidget<RainEffect>(
+                  //         game: game,
+                  //         overlayBuilderMap: {
+                  //       'userArea': (ctx, game) {
+                  //         return const Padding(
+                  //             padding: EdgeInsets.symmetric(horizontal: 80),
+                  //             child: Column(
+                  //                 mainAxisAlignment: MainAxisAlignment.center,
+                  //                 children: [
+                  //                   TextField(
+                  //                       decoration: InputDecoration(
+                  //                           filled: true,
+                  //                           fillColor: Colors.white,
+                  //                           hintText: 'Username')),
+                  //                   TextField(
+                  //                       decoration: InputDecoration(
+                  //                           filled: true,
+                  //                           fillColor: Colors.white,
+                  //                           hintText: 'Password'))
+                  //                 ]));
+                  //       },
+                  //       'container1': (ctx, game) {
+                  //         return ActionButtonWidget(Colors.blueAccent,
+                  //             "Sign in", Alignment.bottomCenter, () {
+                  //           print(
+                  //               "=== This is Flutter widget inside Flutter Flame ===");
+                  //         });
+                  //       },
+                  //     },
+                  //         initialActiveOverlays: const [
+                  //       'userArea',
+                  //       'container1'
+                  //     ])),
+                  // Column(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     Container(
+                  //       decoration: BoxDecoration(
+                  //         border: Border.all(color: Colors.blueAccent.shade400),
+                  //         color: Colors.white,
+                  //       ),
+                  //       height: 200,
+                  //     ),
+                  //     ActionButtonWidget(
+                  //         Colors.redAccent, "Sign out", Alignment.bottomCenter,
+                  //         () {
+                  //       print("=== This is normal Flutter widget ===");
+                  //     })
+                  //   ],
+                  // ),
                 ],
               ),
             ),
