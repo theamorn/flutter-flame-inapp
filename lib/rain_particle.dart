@@ -34,7 +34,7 @@ class RainEffect extends FlameGame
       scale: Vector2(3.5, 3.5),
       size: spriteSize,
     );
-    add(rainComponent);
+    // add(rainComponent);
 
     add(ScreenHitbox());
     add(DynamicIslandButton()
