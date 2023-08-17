@@ -12,6 +12,9 @@ class SpriteSheetWidget extends FlameGame with TapDetector {
   }
 
   @override
+  Color backgroundColor() => const Color(0xff0000ff);
+
+  @override
   Future<void> onLoad() async {
     final spriteSheet = SpriteSheet(
       image: await images.load('cat_sprite_long.png'),
@@ -25,6 +28,8 @@ class SpriteSheetWidget extends FlameGame with TapDetector {
       animation: animation,
       scale: Vector2(0.4, 0.4),
       position: Vector2(160, -5),
+      // scale: Vector2(10.4, 10.4),
+      // position: Vector2(-250, -5),
       size: spriteSize,
     );
 

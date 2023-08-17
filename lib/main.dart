@@ -44,10 +44,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class ShaderPainter extends CustomPainter {
-  ShaderPainter({required this.shader, required this.time});
+  ShaderPainter({required this.shader});
   ui.FragmentShader shader;
-  final double time;
-  double seaHeight = 0.2;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -79,8 +77,6 @@ class ShaderPainter extends CustomPainter {
 
 class _MyHomePageState extends State<MyHomePage>
     with AfterLayoutMixin<MyHomePage> {
-  double maxWidth = 0.0;
-  double maxHeight = 0.0;
   late RainEffect game;
   late Timer timer;
   double delta = 0;
@@ -90,63 +86,25 @@ class _MyHomePageState extends State<MyHomePage>
   @override
   void initState() {
     super.initState();
+
+    // Add into here
     game = RainEffect();
-    waterGame = Water();
-    timer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
-      setState(() {
-        delta += 1 / 60;
-      });
-    });
+    // waterGame = Water();
+    // timer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
+    //   setState(() {
+    //     delta += 1 / 60;
+    //   });
+    // });
   }
 
   @override
   Future<FutureOr<void>> afterFirstLayout(BuildContext context) async {
     final imageData = await rootBundle.load('assets/images/street.jpg');
     image = await decodeImageFromList(imageData.buffer.asUint8List());
-
-    // final program = await ui.FragmentProgram.fromAsset('shaders/myshader.frag');
-  }
-
-  void updateShader(Canvas canvas, Rect rect, ui.FragmentProgram program) {
-    var shader = program.fragmentShader();
-    shader.setFloat(0, 42.0);
-    canvas.drawRect(rect, Paint()..shader = shader);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final size = MediaQuery.of(context).size;
-    final height = AppBar().preferredSize.height;
-    maxWidth = size.width;
-    maxHeight = size.height - height;
   }
 
   @override
   Widget build(BuildContext context) {
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     title: const Text('Water'),
-    //   ),
-    //   body: GameWidget(game: waterGame),
-    //   floatingActionButton: Column(
-    //     mainAxisAlignment: MainAxisAlignment.end,
-    //     crossAxisAlignment: CrossAxisAlignment.end,
-    //     children: [
-    //       FloatingActionButton(
-    //         heroTag: Object(),
-    //         onPressed: () => waterGame.seaHeight += 0.1,
-    //         child: const Icon(Icons.add),
-    //       ),
-    //       const SizedBox(height: 8),
-    //       FloatingActionButton(
-    //         heroTag: Object(),
-    //         onPressed: () => waterGame.seaHeight -= 0.1,
-    //         child: const Icon(Icons.remove),
-    //       ),
-    //     ],
-    //   ),
-    // );
     return Stack(children: [
       Scaffold(
           appBar: AppBar(
@@ -175,25 +133,25 @@ class _MyHomePageState extends State<MyHomePage>
                   //         child: CircularProgressIndicator(),
                   //       )),
                   // ),
-                  SizedBox(
-                    height: 700,
-                    child: ShaderBuilder((context, shader, child) {
-                      final size = MediaQuery.sizeOf(context);
-                      shader.setFloat(0, size.width);
-                      shader.setFloat(1, size.height);
-                      shader.setFloat(2, delta);
-                      // shader.setImageSampler(0, image!);
-                      // shader.setFloat(3, 0.5);
-                      return CustomPaint(
-                        size: MediaQuery.of(context).size,
-                        painter: ShaderPainter(shader: shader, time: delta),
-                      );
-                    },
-                        assetKey: 'shaders/ball.frag',
-                        child: const Center(
-                          child: CircularProgressIndicator(),
-                        )),
-                  ),
+                  // SizedBox(
+                  //   height: 700,
+                  //   child: ShaderBuilder((context, shader, child) {
+                  //     final size = MediaQuery.sizeOf(context);
+                  //     shader.setFloat(0, size.width);
+                  //     shader.setFloat(1, size.height);
+                  //     shader.setFloat(2, delta);
+                  //     // shader.setImageSampler(0, image!);
+                  //     // shader.setFloat(3, 0.5);
+                  //     return CustomPaint(
+                  //       size: MediaQuery.of(context).size,
+                  //       painter: ShaderPainter(shader: shader, time: delta),
+                  //     );
+                  //   },
+                  //       assetKey: 'shaders/ball.frag',
+                  //       child: const Center(
+                  //         child: CircularProgressIndicator(),
+                  //       )),
+                  // ),
                   // SizedBox(
                   //   height: 200,
                   //   child: ShaderBuilder(
@@ -265,6 +223,20 @@ class _MyHomePageState extends State<MyHomePage>
                   //       )),
                   // ),
 
+                  const Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextField(
+                            decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white,
+                                hintText: 'Username')),
+                        TextField(
+                            decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white,
+                                hintText: 'Password'))
+                      ]),
                   // Expanded(
                   //     child: GameWidget<RainEffect>(
                   //         game: game,
@@ -299,33 +271,33 @@ class _MyHomePageState extends State<MyHomePage>
                   //       'userArea',
                   //       'container1'
                   //     ])),
-                  // Column(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     Container(
-                  //       decoration: BoxDecoration(
-                  //         border: Border.all(color: Colors.blueAccent.shade400),
-                  //         color: Colors.white,
-                  //       ),
-                  //       height: 200,
-                  //     ),
-                  //     ActionButtonWidget(
-                  //         Colors.redAccent, "Sign out", Alignment.bottomCenter,
-                  //         () {
-                  //       print("=== This is normal Flutter widget ===");
-                  //     })
-                  //   ],
-                  // ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Container(
+                      //   decoration: BoxDecoration(
+                      //     border: Border.all(color: Colors.blueAccent.shade400),
+                      //     color: Colors.white,
+                      //   ),
+                      //   height: 200,
+                      // ),
+                      ActionButtonWidget(
+                          Colors.redAccent, "Sign out", Alignment.bottomCenter,
+                          () {
+                        print("=== This is normal Flutter widget ===");
+                      }),
+                      SizedBox(
+                          width: 100,
+                          height: 100,
+                          child: Align(
+                              alignment: Alignment.topCenter,
+                              child: GameWidget(game: SpriteSheetWidget())))
+                    ],
+                  ),
                 ],
               ),
             ),
           )),
-      SizedBox(
-          width: 12,
-          height: 12,
-          child: Align(
-              alignment: Alignment.topCenter,
-              child: GameWidget(game: SpriteSheetWidget()))),
     ]);
   }
 }
