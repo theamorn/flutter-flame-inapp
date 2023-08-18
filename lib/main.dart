@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Flutter Flame & Shader'),
     );
   }
 }
@@ -55,18 +55,18 @@ class ShaderPainter extends CustomPainter {
     //   Rect.fromLTWH(0, 0, size.width, size.height),
     //   Paint()..shader = shader,
     // );
-    // canvas
-    //   ..translate(size.width, size.height)
-    //   ..rotate(180 * degrees2Radians)
-    //   ..drawRect(
-    //     Offset.zero & size,
-    //     Paint()..shader = shader,
-    //   );
+    canvas
+      ..translate(size.width, size.height)
+      ..rotate(180 * degrees2Radians)
+      ..drawRect(
+        Offset.zero & size,
+        Paint()..shader = shader,
+      );
 
-    canvas.drawRect(
-      Offset.zero & size,
-      Paint()..shader = shader,
-    );
+    // canvas.drawRect(
+    //   Offset.zero & size,
+    //   Paint()..shader = shader,
+    // );
   }
 
   @override
@@ -78,9 +78,10 @@ class ShaderPainter extends CustomPainter {
 class _MyHomePageState extends State<MyHomePage>
     with AfterLayoutMixin<MyHomePage> {
   late RainEffect game;
+  late Water waterGame;
+
   late Timer timer;
   double delta = 0;
-  late Water waterGame;
   ui.Image? image;
 
   @override
@@ -90,11 +91,11 @@ class _MyHomePageState extends State<MyHomePage>
     // Add into here
     game = RainEffect();
     // waterGame = Water();
-    // timer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
-    //   setState(() {
-    //     delta += 1 / 60;
-    //   });
-    // });
+    timer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
+      setState(() {
+        delta += 1 / 60;
+      });
+    });
   }
 
   @override
@@ -105,199 +106,235 @@ class _MyHomePageState extends State<MyHomePage>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Scaffold(
-          appBar: AppBar(
-            title: Text(widget.title),
-          ),
-          body: SafeArea(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  // SizedBox(
-                  //   height: 300,
-                  //   child: ShaderBuilder((context, shader, child) {
-                  //     final size = MediaQuery.sizeOf(context);
-                  //     shader.setFloat(0, size.width);
-                  //     shader.setFloat(1, size.height);
-                  //     shader.setFloat(2, delta);
-                  //     // shader.setFloat(3, 0.5);
-                  //     return CustomPaint(
-                  //       size: MediaQuery.of(context).size,
-                  //       painter: ShaderPainter(shader: shader, time: delta),
-                  //     );
-                  //   },
-                  //       assetKey: 'shaders/wave.frag',
-                  //       child: const Center(
-                  //         child: CircularProgressIndicator(),
-                  //       )),
-                  // ),
-                  // SizedBox(
-                  //   height: 700,
-                  //   child: ShaderBuilder((context, shader, child) {
-                  //     final size = MediaQuery.sizeOf(context);
-                  //     shader.setFloat(0, size.width);
-                  //     shader.setFloat(1, size.height);
-                  //     shader.setFloat(2, delta);
-                  //     // shader.setImageSampler(0, image!);
-                  //     // shader.setFloat(3, 0.5);
-                  //     return CustomPaint(
-                  //       size: MediaQuery.of(context).size,
-                  //       painter: ShaderPainter(shader: shader, time: delta),
-                  //     );
-                  //   },
-                  //       assetKey: 'shaders/ball.frag',
-                  //       child: const Center(
-                  //         child: CircularProgressIndicator(),
-                  //       )),
-                  // ),
-                  // SizedBox(
-                  //   height: 200,
-                  //   child: ShaderBuilder(
-                  //       (context, shader, child) => CustomPaint(
-                  //             size: MediaQuery.of(context).size,
-                  //             painter:
-                  //                 ShaderPainter(shader: shader, time: delta),
-                  //           ),
-                  //       assetKey: 'shaders/rain.frag',
-                  //       child: const Center(
-                  //         child: CircularProgressIndicator(),
-                  //       )),
-                  // ),
-                  // SizedBox(height: 1000, child: GameWidget(game: waterGame)),
-                  // ShaderBuilder((context, shader, child) {
-                  //   final size = MediaQuery.sizeOf(context);
-                  //   shader.setFloat(0, size.width);
-                  //   shader.setFloat(1, size.height);
-                  //   shader.setFloat(2, delta);
-                  //   shader.setFloat(3, 0.5);
-                  //   return CustomPaint(
-                  //     size: const Size(double.infinity, 600),
-                  //     painter: ShaderPainter(shader: shader, time: delta),
-                  //   );
-                  // },
-                  //     assetKey: 'shaders/water.glsl',
-                  //     child: const Center(
-                  //       child: CircularProgressIndicator(),
-                  //     )),
+    return Stack(
+      children: [
+        Scaffold(
+            appBar: AppBar(
+              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+              title: Text(widget.title),
+            ),
+            body: SafeArea(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    // SizedBox(
+                    //   height: 300,
+                    //   child: ShaderBuilder((context, shader, child) {
+                    //     final size = MediaQuery.sizeOf(context);
+                    //     shader.setFloat(0, size.width);
+                    //     shader.setFloat(1, size.height);
+                    //     shader.setFloat(2, delta);
+                    //     return CustomPaint(
+                    //       size: MediaQuery.of(context).size,
+                    //       painter: ShaderPainter(shader: shader),
+                    //     );
+                    //   },
+                    //       assetKey: 'shaders/wave.frag',
+                    //       child: const Center(
+                    //         child: CircularProgressIndicator(),
+                    //       )),
+                    // ),
+                    // SizedBox(
+                    //   height: 300,
+                    //   child: ShaderBuilder((context, shader, child) {
+                    //     final size = MediaQuery.sizeOf(context);
+                    //     shader.setFloat(0, size.width);
+                    //     shader.setFloat(1, size.height);
+                    //     shader.setFloat(2, delta);
+                    //     return CustomPaint(
+                    //       size: MediaQuery.of(context).size,
+                    //       painter: ShaderPainter(shader: shader),
+                    //     );
+                    //   },
+                    //       assetKey: 'shaders/ball.frag',
+                    //       child: const Center(
+                    //         child: CircularProgressIndicator(),
+                    //       )),
+                    // ),
 
-                  // SizedBox(
-                  //   height: 1000,
-                  //   child: ShaderBuilder(
-                  //       (context, shader, child) => CustomPaint(
-                  //             size: MediaQuery.of(context).size,
-                  //             painter:
-                  //                 ShaderPainter(shader: shader, time: delta),
-                  //           ),
-                  //       assetKey: 'shaders/sun.frag',
-                  //       child: const Center(
-                  //         child: CircularProgressIndicator(),
-                  //       )),
-                  // ),
+                    // SizedBox(
+                    //     height: 200,
+                    //     child: ShaderBuilder((context, shader, child) {
+                    //       final size = MediaQuery.sizeOf(context);
+                    //       shader.setFloat(0, size.width);
+                    //       shader.setFloat(1, size.height);
+                    //       shader.setFloat(2, delta);
+                    //       shader.setImageSampler(0, image!);
+                    //       return CustomPaint(
+                    //         size: MediaQuery.of(context).size,
+                    //         painter: ShaderPainter(shader: shader),
+                    //       );
+                    //     },
+                    //         assetKey: 'shaders/rain.frag',
+                    //         child: const Center(
+                    //           child: CircularProgressIndicator(),
+                    //         ))),
+                    // SizedBox(height: 800, child: GameWidget(game: waterGame)),
+                    ShaderBuilder((context, shader, child) {
+                      final size = MediaQuery.sizeOf(context);
+                      shader.setFloat(0, size.width);
+                      shader.setFloat(1, size.height);
+                      shader.setFloat(2, delta);
+                      shader.setFloat(3, 1.0);
+                      return CustomPaint(
+                        size: const Size(double.infinity, 600),
+                        painter: ShaderPainter(shader: shader),
+                      );
+                    },
+                        assetKey: 'shaders/water.glsl',
+                        child: const Center(
+                          child: CircularProgressIndicator(),
+                        )),
 
-                  // SizedBox(
-                  //   height: 200,
-                  //   child: ShaderBuilder(
-                  //       (context, shader, child) => CustomPaint(
-                  //             size: MediaQuery.of(context).size,
-                  //             painter:
-                  //                 ShaderPainter(shader: shader, time: delta),
-                  //           ),
-                  //       assetKey: 'shaders/star.frag',
-                  //       child: const Center(
-                  //         child: CircularProgressIndicator(),
-                  //       )),
-                  // ),
-                  // SizedBox(
-                  //   height: 200,
-                  //   child: ShaderBuilder(
-                  //       (context, shader, child) => CustomPaint(
-                  //             size: MediaQuery.of(context).size,
-                  //             painter:
-                  //                 ShaderPainter(shader: shader, time: delta),
-                  //           ),
-                  //       assetKey: 'shaders/wave.frag',
-                  //       child: const Center(
-                  //         child: CircularProgressIndicator(),
-                  //       )),
-                  // ),
+                    // ShaderBuilder((context, shader, child) {
+                    //   final size = MediaQuery.sizeOf(context);
+                    //   shader.setFloat(0, size.width);
+                    //   shader.setFloat(1, size.height);
+                    //   shader.setFloat(2, delta);
+                    //   shader.setFloat(3, 11.0);
+                    //   return CustomPaint(
+                    //     size: const Size(double.infinity, 600),
+                    //     painter: ShaderPainter(shader: shader),
+                    //   );
+                    // },
+                    //     assetKey: 'shaders/sun.frag',
+                    //     child: const Center(
+                    //       child: CircularProgressIndicator(),
+                    //     )),
 
-                  const Column(
+                    // ShaderBuilder((context, shader, child) {
+                    //   final size = MediaQuery.sizeOf(context);
+                    //   shader.setFloat(0, size.width);
+                    //   shader.setFloat(1, size.height);
+                    //   shader.setFloat(2, delta);
+                    //   // shader.setFloat(3, 11.0);
+                    //   return CustomPaint(
+                    //     size: const Size(double.infinity, 600),
+                    //     painter: ShaderPainter(shader: shader),
+                    //   );
+                    // },
+                    //     assetKey: 'shaders/star.frag',
+                    //     child: const Center(
+                    //       child: CircularProgressIndicator(),
+                    //     )),
+
+                    // ShaderBuilder((context, shader, child) {
+                    //   final size = MediaQuery.sizeOf(context);
+                    //   shader.setFloat(0, size.width);
+                    //   shader.setFloat(1, size.height);
+                    //   shader.setFloat(2, delta);
+                    //   // shader.setFloat(3, 11.0);
+                    //   return CustomPaint(
+                    //     size: const Size(double.infinity, 300),
+                    //     painter: ShaderPainter(shader: shader),
+                    //   );
+                    // },
+                    //     assetKey: 'shaders/wave.frag',
+                    //     child: const Center(
+                    //       child: CircularProgressIndicator(),
+                    //     )),
+                    // SizedBox(
+                    //   width: 400,
+                    //   height: 200,
+                    //   child: ShaderBuilder((context, shader, child) {
+                    //     final size = MediaQuery.sizeOf(context);
+                    //     shader.setFloat(0, size.width);
+                    //     shader.setFloat(1, size.height);
+                    //     shader.setFloat(2, delta);
+                    //     shader.setImageSampler(0, image!);
+                    //     return CustomPaint(
+                    //       // size: const Size(300, 200),
+                    //       painter: ShaderPainter(shader: shader),
+                    //     );
+                    //   },
+                    //       assetKey: 'shaders/snow.frag',
+                    //       child: const Center(
+                    //         child: CircularProgressIndicator(),
+                    //       )),
+                    // ),
+
+                    const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextField(
+                              decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  hintText: 'Username')),
+                          TextField(
+                              decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  hintText: 'Password'))
+                        ]),
+                    // Expanded(
+                    //     child: GameWidget<RainEffect>(
+                    //         game: game,
+                    //         overlayBuilderMap: {
+                    //       'userArea': (ctx, game) {
+                    //         return const Padding(
+                    //             padding: EdgeInsets.symmetric(horizontal: 80),
+                    //             child: Column(
+                    //                 mainAxisAlignment: MainAxisAlignment.center,
+                    //                 children: [
+                    //                   TextField(
+                    //                       decoration: InputDecoration(
+                    //                           filled: true,
+                    //                           fillColor: Colors.white,
+                    //                           hintText: 'Username')),
+                    //                   TextField(
+                    //                       decoration: InputDecoration(
+                    //                           filled: true,
+                    //                           fillColor: Colors.white,
+                    //                           hintText: 'Password'))
+                    //                 ]));
+                    //       },
+                    //       'container1': (ctx, game) {
+                    //         return ActionButtonWidget(Colors.blueAccent,
+                    //             "Sign in", Alignment.bottomCenter, () {
+                    //           print(
+                    //               "=== This is Flutter widget inside Flutter Flame ===");
+                    //         });
+                    //       },
+                    //     },
+                    //         initialActiveOverlays: const [
+                    //       'userArea',
+                    //       'container1'
+                    //     ])),
+
+                    Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        TextField(
-                            decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.white,
-                                hintText: 'Username')),
-                        TextField(
-                            decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.white,
-                                hintText: 'Password'))
-                      ]),
-                  // Expanded(
-                  //     child: GameWidget<RainEffect>(
-                  //         game: game,
-                  //         overlayBuilderMap: {
-                  //       'userArea': (ctx, game) {
-                  //         return const Padding(
-                  //             padding: EdgeInsets.symmetric(horizontal: 80),
-                  //             child: Column(
-                  //                 mainAxisAlignment: MainAxisAlignment.center,
-                  //                 children: [
-                  //                   TextField(
-                  //                       decoration: InputDecoration(
-                  //                           filled: true,
-                  //                           fillColor: Colors.white,
-                  //                           hintText: 'Username')),
-                  //                   TextField(
-                  //                       decoration: InputDecoration(
-                  //                           filled: true,
-                  //                           fillColor: Colors.white,
-                  //                           hintText: 'Password'))
-                  //                 ]));
-                  //       },
-                  //       'container1': (ctx, game) {
-                  //         return ActionButtonWidget(Colors.blueAccent,
-                  //             "Sign in", Alignment.bottomCenter, () {
-                  //           print(
-                  //               "=== This is Flutter widget inside Flutter Flame ===");
-                  //         });
-                  //       },
-                  //     },
-                  //         initialActiveOverlays: const [
-                  //       'userArea',
-                  //       'container1'
-                  //     ])),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Container(
-                      //   decoration: BoxDecoration(
-                      //     border: Border.all(color: Colors.blueAccent.shade400),
-                      //     color: Colors.white,
-                      //   ),
-                      //   height: 200,
-                      // ),
-                      ActionButtonWidget(
-                          Colors.redAccent, "Sign out", Alignment.bottomCenter,
-                          () {
-                        print("=== This is normal Flutter widget ===");
-                      }),
-                      SizedBox(
-                          width: 100,
-                          height: 100,
-                          child: Align(
-                              alignment: Alignment.topCenter,
-                              child: GameWidget(game: SpriteSheetWidget())))
-                    ],
-                  ),
-                ],
+                        // Container(
+                        //   decoration: BoxDecoration(
+                        //     border: Border.all(color: Colors.blueAccent.shade400),
+                        //     color: Colors.white,
+                        //   ),
+                        //   height: 200,
+                        // ),
+                        ActionButtonWidget(
+                            Colors.redAccent, "Sign in", Alignment.bottomCenter,
+                            () {
+                          print("=== This is normal Flutter widget ===");
+                        }),
+                        // SizedBox(
+                        //     width: 100,
+                        //     height: 100,
+                        //     child: Align(
+                        //         alignment: Alignment.topCenter,
+                        //         child: GameWidget(game: SpriteSheetWidget())))
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          )),
-    ]);
+            )),
+        // SizedBox(
+        //     width: 100,
+        //     height: 100,
+        //     child: Align(child: GameWidget(game: SpriteSheetWidget())))
+      ],
+    );
   }
 }
