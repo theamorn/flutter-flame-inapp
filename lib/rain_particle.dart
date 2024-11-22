@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flame/collisions.dart';
+import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flame/sprite.dart';
@@ -14,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'dynamic_island_button.dart';
 
 class RainEffect extends FlameGame
-    with HasGameRef<FlameGame>, HasCollisionDetection, HasTappables {
+    with HasGameRef<FlameGame>, HasCollisionDetection, TapCallbacks {
   late SpriteSheet rainSprite;
   var isRaining = true;
   @override
@@ -34,7 +35,7 @@ class RainEffect extends FlameGame
       scale: Vector2(3.5, 3.5),
       size: spriteSize,
     );
-    add(rainComponent);
+    // add(rainComponent);
 
     add(ScreenHitbox());
     add(DynamicIslandButton()
@@ -46,9 +47,7 @@ class RainEffect extends FlameGame
   }
 
   @override
-  Future<void> onTapDown(int pointerId, TapDownInfo info) async {
-    super.onTapDown(pointerId, info);
-
+  Future<void> onTapDown(TapDownEvent event) async {
     while (isRaining) {
       final randomX = Random();
       final xPos = randomX.nextDouble() * gameRef.size.x;
@@ -56,5 +55,6 @@ class RainEffect extends FlameGame
       add(RainDrop(position));
       await Future.delayed(const Duration(milliseconds: 200));
     }
+    super.onTapDown(event);
   }
 }

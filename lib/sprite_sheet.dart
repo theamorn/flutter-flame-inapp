@@ -7,11 +7,6 @@ import 'package:flutter/animation.dart';
 
 class SpriteSheetWidget extends FlameGame with TapDetector {
   @override
-  void onTapDown(TapDownInfo info) {
-    print(info.eventPosition.game);
-  }
-
-  @override
   Color backgroundColor() => const Color(0x00000000);
 
   @override
