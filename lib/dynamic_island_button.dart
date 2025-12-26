@@ -1,4 +1,4 @@
-import 'package:flame/input.dart';
+import 'package:flame/events.dart';
 import 'package:flame/palette.dart';
 import 'package:flame/components.dart';
 import 'package:flame_app/rain_particle.dart';
@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 enum ButtonState { unpressed, pressed }
 
 class DynamicIslandButton extends SpriteGroupComponent<ButtonState>
-    with HasGameRef<RainEffect>, Tappable {
+    with HasGameRef<RainEffect>, TapCallbacks {
   @override
   Future<void> onLoad() async {
     final pressedSprite = await gameRef.loadSprite(
@@ -37,15 +37,13 @@ class DynamicIslandButton extends SpriteGroupComponent<ButtonState>
   }
 
   @override
-  bool onTapUp(TapUpInfo info) {
+  void onTapUp(TapUpEvent event) {
     current = ButtonState.unpressed;
-    return true;
   }
 
   @override
-  bool onTapDown(TapDownInfo info) {
+  void onTapDown(TapDownEvent event) {
     current = ButtonState.pressed;
     print("=== This is Flutter Flame Button ===");
-    return true;
   }
 }

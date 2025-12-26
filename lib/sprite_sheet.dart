@@ -1,14 +1,14 @@
+import 'package:flame/events.dart';
 import 'package:flame/game.dart';
-import 'package:flame/input.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/animation.dart';
 
-class SpriteSheetWidget extends FlameGame with TapDetector {
+class SpriteSheetWidget extends FlameGame with TapCallbacks {
   @override
-  void onTapDown(TapDownInfo info) {
-    print(info.eventPosition.game);
+  void onTapDown(TapDownEvent event) {
+    print(event.localPosition);
   }
 
   @override
